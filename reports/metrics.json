@@ -1,0 +1,162 @@
+{
+  "project_version": "1.0.0",
+  "selected_model": "Gradient Boosting",
+  "cv_scheme": "RepeatedStratifiedKFold(5 folds x 3 repeats)",
+  "baselines": {
+    "majority_class_accuracy": 0.6161634548992531,
+    "gender_rule_accuracy": 0.7867564534231201
+  },
+  "selected_model_cv": {
+    "accuracy_mean": 0.8398719477747787,
+    "accuracy_std": 0.018736144029634444,
+    "precision_mean": 0.8190261083894271,
+    "precision_std": 0.032485210612118086,
+    "recall_mean": 0.7495026996305767,
+    "recall_std": 0.039165512297404725,
+    "f1_mean": 0.781965318619269,
+    "f1_std": 0.027459221305853706,
+    "roc_auc_mean": 0.8806194284049818,
+    "roc_auc_std": 0.020667548348422098,
+    "fit_seconds": 0.2737133979797363
+  },
+  "out_of_fold": {
+    "accuracy": 0.8462401795735129,
+    "f1": 0.7927382753403933,
+    "roc_auc": 0.8859196412403199
+  },
+  "all_models_cv": {
+    "Baseline (majority class)": {
+      "accuracy_mean": 0.6162,
+      "accuracy_std": 0.0023,
+      "precision_mean": 0.0,
+      "precision_std": 0.0,
+      "recall_mean": 0.0,
+      "recall_std": 0.0,
+      "f1_mean": 0.0,
+      "f1_std": 0.0,
+      "roc_auc_mean": 0.5,
+      "roc_auc_std": 0.0,
+      "fit_seconds": 0.0164
+    },
+    "Logistic Regression": {
+      "accuracy_mean": 0.8253,
+      "accuracy_std": 0.0231,
+      "precision_mean": 0.7835,
+      "precision_std": 0.0306,
+      "recall_mean": 0.7533,
+      "recall_std": 0.047,
+      "f1_mean": 0.7674,
+      "f1_std": 0.0335,
+      "roc_auc_mean": 0.8741,
+      "roc_auc_std": 0.0216,
+      "fit_seconds": 0.0204
+    },
+    "SVM (RBF)": {
+      "accuracy_mean": 0.8298,
+      "accuracy_std": 0.0207,
+      "precision_mean": 0.8033,
+      "precision_std": 0.0348,
+      "recall_mean": 0.7387,
+      "recall_std": 0.04,
+      "f1_mean": 0.7688,
+      "f1_std": 0.0297,
+      "roc_auc_mean": 0.8711,
+      "roc_auc_std": 0.0221,
+      "fit_seconds": 0.0749
+    },
+    "Random Forest": {
+      "accuracy_mean": 0.8301,
+      "accuracy_std": 0.0154,
+      "precision_mean": 0.8112,
+      "precision_std": 0.0304,
+      "recall_mean": 0.728,
+      "recall_std": 0.0301,
+      "f1_mean": 0.7668,
+      "f1_std": 0.022,
+      "roc_auc_mean": 0.872,
+      "roc_auc_std": 0.0226,
+      "fit_seconds": 0.4692
+    },
+    "Gradient Boosting": {
+      "accuracy_mean": 0.8399,
+      "accuracy_std": 0.0187,
+      "precision_mean": 0.819,
+      "precision_std": 0.0325,
+      "recall_mean": 0.7495,
+      "recall_std": 0.0392,
+      "f1_mean": 0.782,
+      "f1_std": 0.0275,
+      "roc_auc_mean": 0.8806,
+      "roc_auc_std": 0.0207,
+      "fit_seconds": 0.2737
+    },
+    "HistGradientBoosting": {
+      "accuracy_mean": 0.8373,
+      "accuracy_std": 0.0192,
+      "precision_mean": 0.8154,
+      "precision_std": 0.0296,
+      "recall_mean": 0.7456,
+      "recall_std": 0.043,
+      "f1_mean": 0.7781,
+      "f1_std": 0.0295,
+      "roc_auc_mean": 0.8701,
+      "roc_auc_std": 0.0237,
+      "fit_seconds": 0.1593
+    },
+    "Soft Voting Ensemble": {
+      "accuracy_mean": 0.8343,
+      "accuracy_std": 0.0189,
+      "precision_mean": 0.8039,
+      "precision_std": 0.0272,
+      "recall_mean": 0.7524,
+      "recall_std": 0.0423,
+      "f1_mean": 0.7766,
+      "f1_std": 0.0288,
+      "roc_auc_mean": 0.8817,
+      "roc_auc_std": 0.0201,
+      "fit_seconds": 0.834
+    }
+  },
+  "permutation_importance": {
+    "Sex": {
+      "mean": 0.0381,
+      "std": 0.0183
+    },
+    "Pclass": {
+      "mean": 0.0313,
+      "std": 0.0085
+    },
+    "Name (Title)": {
+      "mean": 0.1313,
+      "std": 0.0286
+    },
+    "Age": {
+      "mean": 0.0323,
+      "std": 0.0076
+    },
+    "Fare": {
+      "mean": 0.0622,
+      "std": 0.0207
+    },
+    "SibSp": {
+      "mean": 0.009,
+      "std": 0.01
+    },
+    "Parch": {
+      "mean": 0.0072,
+      "std": 0.0055
+    },
+    "Cabin (Deck)": {
+      "mean": 0.0019,
+      "std": 0.008
+    },
+    "Embarked": {
+      "mean": -0.003,
+      "std": 0.0046
+    },
+    "Ticket group size": {
+      "mean": 0.0431,
+      "std": 0.0148
+    }
+  }
+}
