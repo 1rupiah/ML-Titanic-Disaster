@@ -64,17 +64,17 @@ def eda_figures(train: pd.DataFrame) -> None:
     _save(fig, "03_missing_values.png")
 
 
-def model_comparison(results: pd.DataFrame) -> None:
+def model_comparison(results: pd.DataFrame, selected: str) -> None:
     res = results.sort_values("accuracy_mean")
     fig, ax = plt.subplots(figsize=(9, 5))
-    colors = ["#2E86C1" if i == len(res) - 1 else "#AEB6BF" for i in range(len(res))]
+    colors = ["#2E86C1" if n == selected else "#AEB6BF" for n in res.index]
     ax.barh(res.index, res["accuracy_mean"], xerr=res["accuracy_std"],
             color=colors, capsize=4)
     for i, (m, s) in enumerate(zip(res["accuracy_mean"], res["accuracy_std"], strict=True)):
         ax.text(m + s + 0.005, i, f"{m:.3f}", va="center", fontsize=10)
     ax.set_xlim(0.5, 0.92)
     ax.set_xlabel("Cross validated accuracy (5 fold x 3 repeats)")
-    ax.set_title("Model comparison")
+    ax.set_title(f"Model comparison (selected: {selected})")
     _save(fig, "04_model_comparison.png")
 
 
@@ -120,3 +120,26 @@ def threshold_curve(y: np.ndarray, proba: np.ndarray) -> None:
     ax.set_title("Trade off between precision and recall")
     ax.legend()
     _save(fig, "07_threshold_tradeoff.png")
+
+
+def cv_vs_leaderboard() -> None:
+    """Offline (CV) versus real world (Kaggle) accuracy for every version."""
+    path = config.REPORTS_DIR / "leaderboard.csv"
+    if not path.exists():
+        return
+    lb = pd.read_csv(path)
+    labels = [f"{v}\n{m.split(' (')[0]}" for v, m in zip(lb["version"], lb["model"], strict=True)]
+    x = np.arange(len(lb))
+    fig, ax = plt.subplots(figsize=(11, 5))
+    ax.bar(x - 0.2, lb["cv_accuracy"], 0.4, label="Cross validation (offline)", color="#AEB6BF")
+    ax.bar(x + 0.2, lb["kaggle_public_lb"], 0.4, label="Kaggle leaderboard (unseen)",
+           color="#2E86C1")
+    for i, (cv, real) in enumerate(zip(lb["cv_accuracy"], lb["kaggle_public_lb"], strict=True)):
+        ax.text(i - 0.2, cv + 0.005, f"{cv:.3f}", ha="center", fontsize=9)
+        ax.text(i + 0.2, real + 0.005, f"{real:.3f}", ha="center", fontsize=9, weight="bold")
+    ax.set_xticks(x, labels, fontsize=9)
+    ax.set_ylim(0.65, 0.93)
+    ax.set_ylabel("Accuracy")
+    ax.set_title("Offline score versus real world score")
+    ax.legend(loc="upper center", ncol=2, frameon=False)
+    _save(fig, "08_cv_vs_leaderboard.png")

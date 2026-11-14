@@ -38,16 +38,19 @@ def main() -> None:
         raise FileNotFoundError("No trained model. Run `python -m titanic.train` first.")
     train, test = load_data()
     _, test = add_group_features(train, test)
-    model = joblib.load(config.MODEL_FILE)
-
-    preds = model.predict(test).astype(int)
-    sub = pd.DataFrame({config.ID_COL: test[config.ID_COL], config.TARGET: preds})
-    validate_submission(sub, test[config.ID_COL])
-
     config.SUBMISSIONS_DIR.mkdir(parents=True, exist_ok=True)
-    sub.to_csv(config.SUBMISSION_FILE, index=False)
-    log.info("Wrote %d predictions to %s (predicted survival rate %.3f)",
-             len(sub), config.SUBMISSION_FILE, sub[config.TARGET].mean())
+    jobs = [(config.MODEL_FILE, config.SUBMISSION_FILE),
+            (config.MODEL_BEST_CV_FILE, config.SUBMISSION_BEST_CV_FILE)]
+    for model_path, out_path in jobs:
+        if not model_path.exists():
+            continue
+        model = joblib.load(model_path)
+        preds = model.predict(test).astype(int)
+        sub = pd.DataFrame({config.ID_COL: test[config.ID_COL], config.TARGET: preds})
+        validate_submission(sub, test[config.ID_COL])
+        sub.to_csv(out_path, index=False)
+        log.info("Wrote %d predictions to %s (predicted survival rate %.3f)",
+                 len(sub), out_path, sub[config.TARGET].mean())
 
 
 if __name__ == "__main__":

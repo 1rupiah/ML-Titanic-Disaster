@@ -12,8 +12,10 @@ SUBMISSIONS_DIR = ROOT / "submissions"
 TRAIN_FILE = DATA_RAW / "train.csv"
 TEST_FILE = DATA_RAW / "test.csv"
 MODEL_FILE = MODELS_DIR / "model.joblib"
+MODEL_BEST_CV_FILE = MODELS_DIR / "model_best_cv.joblib"
 METRICS_FILE = REPORTS_DIR / "metrics.json"
 SUBMISSION_FILE = SUBMISSIONS_DIR / "submission.csv"
+SUBMISSION_BEST_CV_FILE = SUBMISSIONS_DIR / "submission_best_cv.csv"
 
 TARGET = "Survived"
 ID_COL = "PassengerId"
@@ -29,6 +31,7 @@ NUMERIC_FEATURES = [
     "TicketGroupSize",
     "SibSp",
     "Parch",
+    "WCGroupRate",
 ]
 CATEGORICAL_FEATURES = [
     "Sex",
@@ -38,4 +41,4 @@ CATEGORICAL_FEATURES = [
     "Deck",
     "FamilyType",
 ]
-BINARY_FEATURES = ["IsAlone", "HasCabin", "IsChild"]
+BINARY_FEATURES = ["IsAlone", "HasCabin", "IsChild", "WCGroupKnown", "IsWomanOrChild"]

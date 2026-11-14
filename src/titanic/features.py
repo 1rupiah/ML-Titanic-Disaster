@@ -29,6 +29,27 @@ def extract_title(name: pd.Series) -> pd.Series:
     return raw.map(TITLE_MAP).fillna("Rare")
 
 
+def group_keys(X: pd.DataFrame) -> pd.DataFrame:
+    """Two keys that identify people travelling together.
+
+    FamilyKey: surname + class + ticket stem + fare + port (separates unrelated
+    passengers who share a common surname). TicketKey: identical ticket number.
+    """
+    surname = X["Name"].str.split(",").str[0].str.strip()
+    stem = X["Ticket"].astype(str).str[:-1]
+    fare = X["Fare"].round(2).astype(str)
+    family = surname + "|" + X["Pclass"].astype(str) + "|" + stem + "|" + fare + "|" + X[
+        "Embarked"
+    ].astype(str)
+    return pd.DataFrame({"FamilyKey": family, "TicketKey": X["Ticket"].astype(str)},
+                        index=X.index)
+
+
+def is_woman_or_child(X: pd.DataFrame) -> pd.Series:
+    """Women and boys (title Master): the group protected by 'women and children first'."""
+    return (X["Sex"] == "female") | (extract_title(X["Name"]) == "Master")
+
+
 def add_group_features(
     train: pd.DataFrame, test: pd.DataFrame
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -50,7 +71,35 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         self.age_global_ = float(X["Age"].median())
         self.fare_by_class_ = X.groupby("Pclass")["Fare"].median().to_dict()
         self.embarked_mode_ = X["Embarked"].mode().iloc[0]
+
+        # Woman/child group survival memory (target based, learned from fit data only).
+        self.wc_members_ = {}
+        if y is not None:
+            keys = group_keys(X)
+            wc = is_woman_or_child(X).to_numpy()
+            ids = X["PassengerId"].to_numpy()
+            ys = np.asarray(y)
+            for col in ("FamilyKey", "TicketKey"):
+                for key, pid, w, lab in zip(keys[col], ids, wc, ys, strict=True):
+                    if w:
+                        self.wc_members_.setdefault((col, key), {})[pid] = int(lab)
         return self
+
+    def _wc_group_rate(self, X: pd.DataFrame) -> pd.Series:
+        """Survival rate of the OTHER women/children in a passenger's group.
+
+        Excluding the passenger's own id makes this leave one out on training rows,
+        so a row never sees its own label. NaN when no labelled member is known.
+        """
+        keys = group_keys(X)
+        rates = []
+        for i, pid in enumerate(X["PassengerId"].to_numpy()):
+            seen = {}
+            for col in ("FamilyKey", "TicketKey"):
+                seen.update(self.wc_members_.get((col, keys[col].iat[i]), {}))
+            seen.pop(pid, None)
+            rates.append(np.mean(list(seen.values())) if seen else np.nan)
+        return pd.Series(rates, index=X.index, dtype=float)
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         X = X.copy()
@@ -72,8 +121,13 @@ class FeatureEngineer(BaseEstimator, TransformerMixin):
         if "TicketGroupSize" not in X:
             X["TicketGroupSize"] = 1
         X["FarePerPerson"] = X["Fare"] / X["TicketGroupSize"].clip(lower=1)
-        X["Deck"] = X["Cabin"].str[0].fillna("U").replace({"T": "U"})
+        deck = X["Cabin"].astype("string").str[0].fillna("U")
+        X["Deck"] = deck.replace({"T": "U"}).astype(str)
         X["HasCabin"] = X["Cabin"].notna().astype(int)
         X["IsChild"] = (X["Age"] < 14).astype(int)
+        rate = self._wc_group_rate(X)
+        X["WCGroupKnown"] = rate.notna().astype(int)
+        X["WCGroupRate"] = rate.fillna(0.5)
+        X["IsWomanOrChild"] = is_woman_or_child(X).astype(int)
         X["Pclass"] = X["Pclass"].astype(str)
         return X

@@ -1,28 +1,30 @@
 {
   "project_version": "1.0.0",
-  "selected_model": "Gradient Boosting",
+  "selected_model": "Woman/Child Group Rule",
+  "selection_rule": "simplest model within one std of the best CV accuracy",
+  "highest_cv_model": "Soft Voting Ensemble",
   "cv_scheme": "RepeatedStratifiedKFold(5 folds x 3 repeats)",
   "baselines": {
     "majority_class_accuracy": 0.6161634548992531,
     "gender_rule_accuracy": 0.7867564534231201
   },
   "selected_model_cv": {
-    "accuracy_mean": 0.8398719477747787,
-    "accuracy_std": 0.018736144029634444,
-    "precision_mean": 0.8190261083894271,
-    "precision_std": 0.032485210612118086,
-    "recall_mean": 0.7495026996305767,
-    "recall_std": 0.039165512297404725,
-    "f1_mean": 0.781965318619269,
-    "f1_std": 0.027459221305853706,
-    "roc_auc_mean": 0.8806194284049818,
-    "roc_auc_std": 0.020667548348422098,
-    "fit_seconds": 0.2737133979797363
+    "accuracy_mean": 0.8413596133324965,
+    "accuracy_std": 0.026076436595819687,
+    "precision_mean": 0.8431284296451177,
+    "precision_std": 0.038121841421145684,
+    "recall_mean": 0.7212134129013925,
+    "recall_std": 0.04946328407913502,
+    "f1_mean": 0.7766925870585009,
+    "f1_std": 0.03941442077147382,
+    "roc_auc_mean": 0.8534643408438547,
+    "roc_auc_std": 0.02906518915994602,
+    "fit_seconds": 0.03680157661437988
   },
   "out_of_fold": {
-    "accuracy": 0.8462401795735129,
-    "f1": 0.7927382753403933,
-    "roc_auc": 0.8859196412403199
+    "accuracy": 0.8428731762065096,
+    "f1": 0.779874213836478,
+    "roc_auc": 0.8553004399279923
   },
   "all_models_cv": {
     "Baseline (majority class)": {
@@ -36,127 +38,144 @@
       "f1_std": 0.0,
       "roc_auc_mean": 0.5,
       "roc_auc_std": 0.0,
-      "fit_seconds": 0.0164
+      "fit_seconds": 0.0451
     },
     "Logistic Regression": {
-      "accuracy_mean": 0.8253,
-      "accuracy_std": 0.0231,
-      "precision_mean": 0.7835,
-      "precision_std": 0.0306,
-      "recall_mean": 0.7533,
-      "recall_std": 0.047,
-      "f1_mean": 0.7674,
-      "f1_std": 0.0335,
-      "roc_auc_mean": 0.8741,
-      "roc_auc_std": 0.0216,
-      "fit_seconds": 0.0204
+      "accuracy_mean": 0.8432,
+      "accuracy_std": 0.021,
+      "precision_mean": 0.8111,
+      "precision_std": 0.0302,
+      "recall_mean": 0.7719,
+      "recall_std": 0.0422,
+      "f1_mean": 0.7904,
+      "f1_std": 0.0303,
+      "roc_auc_mean": 0.9003,
+      "roc_auc_std": 0.0234,
+      "fit_seconds": 0.0464
     },
     "SVM (RBF)": {
-      "accuracy_mean": 0.8298,
-      "accuracy_std": 0.0207,
-      "precision_mean": 0.8033,
-      "precision_std": 0.0348,
-      "recall_mean": 0.7387,
-      "recall_std": 0.04,
-      "f1_mean": 0.7688,
-      "f1_std": 0.0297,
-      "roc_auc_mean": 0.8711,
-      "roc_auc_std": 0.0221,
-      "fit_seconds": 0.0749
+      "accuracy_mean": 0.8451,
+      "accuracy_std": 0.0241,
+      "precision_mean": 0.8338,
+      "precision_std": 0.0407,
+      "recall_mean": 0.7465,
+      "recall_std": 0.0411,
+      "f1_mean": 0.787,
+      "f1_std": 0.0339,
+      "roc_auc_mean": 0.8857,
+      "roc_auc_std": 0.0267,
+      "fit_seconds": 0.1114
     },
     "Random Forest": {
-      "accuracy_mean": 0.8301,
-      "accuracy_std": 0.0154,
-      "precision_mean": 0.8112,
-      "precision_std": 0.0304,
-      "recall_mean": 0.728,
-      "recall_std": 0.0301,
-      "f1_mean": 0.7668,
-      "f1_std": 0.022,
-      "roc_auc_mean": 0.872,
-      "roc_auc_std": 0.0226,
-      "fit_seconds": 0.4692
+      "accuracy_mean": 0.8399,
+      "accuracy_std": 0.0196,
+      "precision_mean": 0.8278,
+      "precision_std": 0.0403,
+      "recall_mean": 0.7388,
+      "recall_std": 0.0402,
+      "f1_mean": 0.7796,
+      "f1_std": 0.0279,
+      "roc_auc_mean": 0.888,
+      "roc_auc_std": 0.0237,
+      "fit_seconds": 0.5446
     },
     "Gradient Boosting": {
-      "accuracy_mean": 0.8399,
-      "accuracy_std": 0.0187,
-      "precision_mean": 0.819,
-      "precision_std": 0.0325,
-      "recall_mean": 0.7495,
-      "recall_std": 0.0392,
-      "f1_mean": 0.782,
-      "f1_std": 0.0275,
-      "roc_auc_mean": 0.8806,
-      "roc_auc_std": 0.0207,
-      "fit_seconds": 0.2737
+      "accuracy_mean": 0.8458,
+      "accuracy_std": 0.027,
+      "precision_mean": 0.8184,
+      "precision_std": 0.0407,
+      "recall_mean": 0.7709,
+      "recall_std": 0.0532,
+      "f1_mean": 0.7928,
+      "f1_std": 0.0388,
+      "roc_auc_mean": 0.8961,
+      "roc_auc_std": 0.0238,
+      "fit_seconds": 0.3156
     },
     "HistGradientBoosting": {
-      "accuracy_mean": 0.8373,
-      "accuracy_std": 0.0192,
-      "precision_mean": 0.8154,
-      "precision_std": 0.0296,
-      "recall_mean": 0.7456,
-      "recall_std": 0.043,
-      "f1_mean": 0.7781,
-      "f1_std": 0.0295,
-      "roc_auc_mean": 0.8701,
-      "roc_auc_std": 0.0237,
-      "fit_seconds": 0.1593
+      "accuracy_mean": 0.8436,
+      "accuracy_std": 0.0195,
+      "precision_mean": 0.8215,
+      "precision_std": 0.0389,
+      "recall_mean": 0.7603,
+      "recall_std": 0.0451,
+      "f1_mean": 0.7883,
+      "f1_std": 0.028,
+      "roc_auc_mean": 0.8856,
+      "roc_auc_std": 0.0257,
+      "fit_seconds": 0.1663
     },
     "Soft Voting Ensemble": {
-      "accuracy_mean": 0.8343,
-      "accuracy_std": 0.0189,
-      "precision_mean": 0.8039,
-      "precision_std": 0.0272,
-      "recall_mean": 0.7524,
-      "recall_std": 0.0423,
-      "f1_mean": 0.7766,
-      "f1_std": 0.0288,
-      "roc_auc_mean": 0.8817,
-      "roc_auc_std": 0.0201,
-      "fit_seconds": 0.834
+      "accuracy_mean": 0.8485,
+      "accuracy_std": 0.0219,
+      "precision_mean": 0.8292,
+      "precision_std": 0.031,
+      "recall_mean": 0.7631,
+      "recall_std": 0.0474,
+      "f1_mean": 0.7939,
+      "f1_std": 0.0327,
+      "roc_auc_mean": 0.9014,
+      "roc_auc_std": 0.0225,
+      "fit_seconds": 0.8657
+    },
+    "Woman/Child Group Rule": {
+      "accuracy_mean": 0.8414,
+      "accuracy_std": 0.0261,
+      "precision_mean": 0.8431,
+      "precision_std": 0.0381,
+      "recall_mean": 0.7212,
+      "recall_std": 0.0495,
+      "f1_mean": 0.7767,
+      "f1_std": 0.0394,
+      "roc_auc_mean": 0.8535,
+      "roc_auc_std": 0.0291,
+      "fit_seconds": 0.0368
     }
   },
   "permutation_importance": {
     "Sex": {
-      "mean": 0.0381,
-      "std": 0.0183
+      "mean": 0.2764,
+      "std": 0.0137
     },
     "Pclass": {
-      "mean": 0.0313,
-      "std": 0.0085
+      "mean": 0.001,
+      "std": 0.0012
     },
-    "Name (Title)": {
-      "mean": 0.1313,
-      "std": 0.0286
+    "Name (title, surname)": {
+      "mean": 0.0177,
+      "std": 0.0019
     },
     "Age": {
-      "mean": 0.0323,
-      "std": 0.0076
+      "mean": 0.0,
+      "std": 0.0
     },
     "Fare": {
-      "mean": 0.0622,
-      "std": 0.0207
+      "mean": 0.0022,
+      "std": 0.0027
     },
     "SibSp": {
-      "mean": 0.009,
-      "std": 0.01
+      "mean": 0.0,
+      "std": 0.0
     },
     "Parch": {
-      "mean": 0.0072,
-      "std": 0.0055
+      "mean": 0.0,
+      "std": 0.0
     },
-    "Cabin (Deck)": {
-      "mean": 0.0019,
-      "std": 0.008
+    "Ticket (travel group)": {
+      "mean": 0.0659,
+      "std": 0.0146
+    },
+    "Cabin (deck)": {
+      "mean": 0.0,
+      "std": 0.0
     },
     "Embarked": {
-      "mean": -0.003,
-      "std": 0.0046
+      "mean": 0.0007,
+      "std": 0.0009
     },
     "Ticket group size": {
-      "mean": 0.0431,
-      "std": 0.0148
+      "mean": 0.0,
+      "std": 0.0
     }
   }
 }

@@ -1,0 +1,5 @@
+version,model,cv_accuracy,kaggle_public_lb,correct_of_418
+baseline,All women survive (Kaggle example),0.7868,0.76555,320
+v1.0,Gradient Boosting,0.8399,0.74401,311
+v2.0 alt,Soft Voting Ensemble (highest CV),0.8485,0.78947,330
+v2.0,Woman/Child Group Rule (selected),0.8414,0.80143,335

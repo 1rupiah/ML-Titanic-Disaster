@@ -30,7 +30,7 @@ from sklearn.model_selection import (
 from titanic import __version__, config, plots
 from titanic.data import load_data
 from titanic.features import add_group_features
-from titanic.models import get_candidates
+from titanic.models import COMPLEXITY, get_candidates
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
 log = logging.getLogger("train")
@@ -43,9 +43,13 @@ SCORING = {
     "roc_auc": "roc_auc",
 }
 RAW_COLUMNS = ["Sex", "Pclass", "Name", "Age", "Fare", "SibSp", "Parch",
-               "Cabin", "Embarked", "TicketGroupSize"]
-DISPLAY_NAMES = {"Name": "Name (Title)", "Cabin": "Cabin (Deck)",
-                 "TicketGroupSize": "Ticket group size"}
+               "Ticket", "Cabin", "Embarked", "TicketGroupSize"]
+DISPLAY_NAMES = {
+    "Name": "Name (title, surname)",
+    "Ticket": "Ticket (travel group)",
+    "Cabin": "Cabin (deck)",
+    "TicketGroupSize": "Ticket group size",
+}
 
 
 def gender_rule_accuracy(train: pd.DataFrame) -> float:
@@ -82,15 +86,31 @@ def out_of_fold(pipe, X, y):
     for tr, va in skf.split(X, y):
         model = pipe.fit(X.iloc[tr], y.iloc[tr])
         proba[va] = model.predict_proba(X.iloc[va])[:, 1]
+        Xva = X.iloc[va]
         pi = permutation_importance(
-            model, X.iloc[va][RAW_COLUMNS], y.iloc[va], scoring="accuracy",
+            model, Xva, y.iloc[va], scoring="accuracy",
             n_repeats=10, random_state=config.RANDOM_STATE, n_jobs=-1,
         )
-        imps.append(pi.importances_mean)
+        cols = list(Xva.columns)
+        imps.append([pi.importances_mean[cols.index(c)] for c in RAW_COLUMNS])
     imps = np.array(imps)
     imp_df = pd.DataFrame({"mean": imps.mean(0), "std": imps.std(0)}, index=RAW_COLUMNS)
     imp_df = imp_df.rename(index=DISPLAY_NAMES)
     return proba, imp_df
+
+
+def select_one_std_rule(results: pd.DataFrame) -> str:
+    """Pick the simplest model whose CV accuracy is within one std of the best.
+
+    Lesson from v1: a 0.840 CV Gradient Boosting scored 0.744 on Kaggle. On small
+    data, CV differences of 1 point are noise, and simpler models transfer better.
+    """
+    best = results["accuracy_mean"].idxmax()
+    floor = results.loc[best, "accuracy_mean"] - results.loc[best, "accuracy_std"]
+    eligible = results[results["accuracy_mean"] >= floor].copy()
+    eligible["complexity"] = [COMPLEXITY[n] for n in eligible.index]
+    return eligible.sort_values(["complexity", "accuracy_mean"],
+                                ascending=[True, False]).index[0]
 
 
 def main() -> None:
@@ -106,25 +126,31 @@ def main() -> None:
     log.info("%-28s acc=%.4f", "Gender rule baseline", gender_acc)
 
     selectable = results.drop(index="Baseline (majority class)")
-    best_name = selectable["accuracy_mean"].idxmax()
-    log.info("Selected model: %s", best_name)
+    best_cv_name = selectable["accuracy_mean"].idxmax()
+    best_name = select_one_std_rule(selectable)
+    log.info("Highest CV model: %s | Selected (one standard error rule): %s",
+             best_cv_name, best_name)
     best_pipe = get_candidates()[best_name]
 
     proba, imp = out_of_fold(best_pipe, X, y)
     oof_pred = (proba >= 0.5).astype(int)
 
-    plots.model_comparison(results)
+    plots.model_comparison(results, best_name)
     plots.oof_diagnostics(y.values, proba, best_name)
     plots.feature_importance(imp)
     plots.threshold_curve(y.values, proba)
+    plots.cv_vs_leaderboard()
 
     final = get_candidates()[best_name].fit(X, y)
     config.MODELS_DIR.mkdir(parents=True, exist_ok=True)
     joblib.dump(final, config.MODEL_FILE)
+    joblib.dump(get_candidates()[best_cv_name].fit(X, y), config.MODEL_BEST_CV_FILE)
 
     metrics = {
         "project_version": __version__,
         "selected_model": best_name,
+        "selection_rule": "simplest model within one std of the best CV accuracy",
+        "highest_cv_model": best_cv_name,
         "cv_scheme": (
             f"RepeatedStratifiedKFold({config.CV_SPLITS} folds x {config.CV_REPEATS} repeats)"
         ),

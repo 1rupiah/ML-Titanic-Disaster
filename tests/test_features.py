@@ -59,3 +59,28 @@ def test_group_features_do_not_need_target(raw):
     assert "Survived" not in train
     assert train["TicketGroupSize"].tolist() == [2, 1]
     assert test["TicketGroupSize"].tolist() == [2, 1]
+
+
+def test_wc_group_rate_is_leave_one_out():
+    # Two sisters on one ticket: each row must only see the OTHER sister's label.
+    df = pd.DataFrame({
+        "PassengerId": [10, 11, 12],
+        "Pclass": [3, 3, 1],
+        "Name": ["Smith, Miss. Ann", "Smith, Miss. Beth", "Jones, Mr. Carl"],
+        "Sex": ["female", "female", "male"],
+        "Age": [20.0, 22.0, 40.0],
+        "SibSp": [1, 1, 0], "Parch": [0, 0, 0],
+        "Ticket": ["X1", "X1", "Y9"],
+        "Fare": [10.0, 10.0, 50.0],
+        "Cabin": [np.nan, np.nan, np.nan],
+        "Embarked": ["S", "S", "S"],
+    })
+    y = pd.Series([1, 0, 0])
+    out = FeatureEngineer().fit(df, y).transform(df)
+    assert out["WCGroupRate"].tolist() == [0.0, 1.0, 0.5]
+    assert out["WCGroupKnown"].tolist() == [1, 1, 0]
+
+
+def test_unlabelled_fit_has_no_group_memory(raw):
+    out = FeatureEngineer().fit(raw).transform(raw)
+    assert out["WCGroupKnown"].sum() == 0
