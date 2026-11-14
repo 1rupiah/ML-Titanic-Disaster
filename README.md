@@ -1,6 +1,5 @@
 # Titanic Survival Prediction: an end to end, production style ML pipeline
 
-[![CI](https://github.com/1rupiah/ML-Titanic-Disaster/actions/workflows/ci.yml/badge.svg)](https://github.com/1rupiah/ML-Titanic-Disaster/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-pipeline-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
